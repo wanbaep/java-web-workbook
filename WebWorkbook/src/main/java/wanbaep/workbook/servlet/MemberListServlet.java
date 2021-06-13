@@ -34,10 +34,12 @@ public class MemberListServlet extends GenericServlet {
             PrintWriter out = servletResponse.getWriter();
             out.println("<html><head><title>회원목록</title></head>");
             out.println("<body><h1>회원목록</h1>");
+            out.println("<p><a href='add'>신규 회원</a></p>");
             while(resultSet.next()) {
                 out.println(
                         resultSet.getInt("MNO") + ", " +
-                        resultSet.getString("MNAME") + ", " +
+                        "<a href='update?no=" + resultSet.getInt("MNO") + "'>" +
+                        resultSet.getString("MNAME") + "</a>, " +
                         resultSet.getString("EMAIL") + ", " +
                         resultSet.getDate("CRE_DATE") + "<br>");
             }
@@ -46,8 +48,8 @@ public class MemberListServlet extends GenericServlet {
             throw new ServletException();
         } finally {
             try { if (resultSet != null) resultSet.close(); } catch (Exception e) {}
-            try { if (resultSet != null) statement.close(); } catch (Exception e) {}
-            try { if(resultSet != null) conn.close(); } catch (Exception e) {}
+            try { if (statement != null) statement.close(); } catch (Exception e) {}
+            try { if(conn != null) conn.close(); } catch (Exception e) {}
         }
     }
 }
