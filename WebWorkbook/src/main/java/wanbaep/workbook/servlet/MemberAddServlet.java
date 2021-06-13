@@ -1,5 +1,6 @@
 package wanbaep.workbook.servlet;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,11 +38,12 @@ public class MemberAddServlet extends HttpServlet {
         PreparedStatement statement = null;
 
         try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+            ServletContext sc = this.getServletContext();
+            Class.forName(sc.getInitParameter("driver"));
             conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost/workbook_db",
-                    "wanbaep",
-                    "1234");
+                    sc.getInitParameter("url"),
+                    sc.getInitParameter("username"),
+                    sc.getInitParameter("password"));
             statement = conn.prepareStatement(
                     "INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)" +
                             " VALUES (?,?,?,NOW(),NOW())");

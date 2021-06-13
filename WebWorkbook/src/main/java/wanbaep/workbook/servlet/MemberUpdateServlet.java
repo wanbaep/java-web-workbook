@@ -1,6 +1,8 @@
 package wanbaep.workbook.servlet;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 
+@WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -15,11 +18,12 @@ public class MemberUpdateServlet extends HttpServlet {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            Class.forName(this.getInitParameter("driver"));
+            ServletContext sc = this.getServletContext();
+            Class.forName(sc.getInitParameter("driver"));
             conn = DriverManager.getConnection(
-                    this.getInitParameter("url"),
-                    this.getInitParameter("username"),
-                    this.getInitParameter("password"));
+                    sc.getInitParameter("url"),
+                    sc.getInitParameter("username"),
+                    sc.getInitParameter("password"));
             stmt = conn.prepareStatement("UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=NOW()"
                     + " WHERE MNO=?");
             stmt.setString(1, request.getParameter("email"));
@@ -42,11 +46,12 @@ public class MemberUpdateServlet extends HttpServlet {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            Class.forName(this.getInitParameter("driver"));
+            ServletContext sc = this.getServletContext();
+            Class.forName(sc.getInitParameter("driver"));
             conn = DriverManager.getConnection(
-                    this.getInitParameter("url"),
-                    this.getInitParameter("username"),
-                    this.getInitParameter("password"));
+                    sc.getInitParameter("url"),
+                    sc.getInitParameter("username"),
+                    sc.getInitParameter("password"));
             stmt = conn.createStatement();
             rs = stmt.executeQuery(
                     "select MNO, EMAIL, MNAME, CRE_DATE from MEMBERS" +
@@ -64,6 +69,7 @@ public class MemberUpdateServlet extends HttpServlet {
             out.println("이메일: <input type='text' name='email'" + " value='" + rs.getString("EMAIL") + "'><br>");
             out.println("가입일: " + rs.getDate("CRE_DATE") + "<br>");
             out.println("<input type='submit' value='저장'>");
+            out.println("<input type='button' value='삭제' onclick=\"location.href='delete?no=" + request.getParameter("no") + "';\">");
             out.println("<input type='button' value='취소'" + " onclick='location.href=\"list\"'>");
             out.println("</form>");
             out.println("</body></html>");
