@@ -1,0 +1,24 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+interface javax.Servlet <<interface>> #aliceblue ##[dotted]blue {
++init()
++service()
++destory()
++getServletConfig()
++getServletInfo()
+}
+
+abstract javax.GenericServlet <<abstract>> #white {
++init()
++{abstract} service()
++destory()
++getServletConfig()
++getServletInfo()
+}
+
+hide fields
+
+javax.Servlet <|.. javax.GenericServlet
+
+@enduml
