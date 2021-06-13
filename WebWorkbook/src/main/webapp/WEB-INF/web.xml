@@ -6,15 +6,15 @@
 <!--    서블릿 선언-->
     <servlet>
         <servlet-name>Hello</servlet-name>
-        <servlet-class>com.wanbaep.WebWorkbook.servlet.HelloWorld</servlet-class>
+        <servlet-class>wanbaep.workbook.servlet.HelloWorld</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Hello2</servlet-name>
-        <servlet-class>com.wanbaep.WebWorkbook.servlet.HelloWorldGeneric</servlet-class>
+        <servlet-class>wanbaep.workbook.servlet.HelloWorldGeneric</servlet-class>
     </servlet>
 <!--    <servlet>-->
 <!--        <servlet-name>Calculator</servlet-name>-->
-<!--        <servlet-class>com.wanbaep.WebWorkbook.servlet.CalculatorServlet</servlet-class>-->
+<!--        <servlet-class>CalculatorServlet</servlet-class>-->
 <!--    </servlet>-->
     
 <!--    서블릿을 URL과 연결-->

@@ -1,4 +1,4 @@
-package com.wanbaep.WebWorkbook;
+package wanbaep.workbook;
 
 import java.io.*;
 import javax.servlet.http.*;

@@ -1,4 +1,4 @@
-package com.wanbaep.WebWorkbook.servlet;
+package wanbaep.workbook.servlet;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
