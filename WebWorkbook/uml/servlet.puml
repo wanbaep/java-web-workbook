@@ -17,8 +17,13 @@ abstract javax.GenericServlet <<abstract>> #white {
 +getServletInfo()
 }
 
+class ConcreteServlet <<servlet>> #white {
++service()
+}
+
 hide fields
 
 javax.Servlet <|.. javax.GenericServlet
+javax.GenericServlet <|.. ConcreteServlet
 
 @enduml
