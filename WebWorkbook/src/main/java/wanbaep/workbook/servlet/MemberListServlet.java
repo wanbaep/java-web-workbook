@@ -1,5 +1,7 @@
 package wanbaep.workbook.servlet;
 
+import wanbaep.workbook.vo.Member;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.util.ArrayList;
 
 @WebServlet("/member/list")
 public class MemberListServlet extends HttpServlet {
@@ -33,20 +36,19 @@ public class MemberListServlet extends HttpServlet {
                             " order by MNO ASC;");
 
             response.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            out.println("<html><head><title>회원목록</title></head>");
-            out.println("<body><h1>회원목록</h1>");
-            out.println("<p><a href='add'>신규 회원</a></p>");
+            ArrayList<Member> members = new ArrayList<>();
+
             while(resultSet.next()) {
-                out.println(
-                        resultSet.getInt("MNO") + ", " +
-                                "<a href='update?no=" + resultSet.getInt("MNO") + "'>" +
-                                resultSet.getString("MNAME") + "</a>, " +
-                                resultSet.getString("EMAIL") + ", " +
-                                resultSet.getDate("CRE_DATE") +
-                                "<a href='delete?no=" + resultSet.getInt("MNO") + "'>[삭제]</a>" + "<br>");
+                members.add(new Member()
+                        .setNo(resultSet.getInt("MNO"))
+                        .setName(resultSet.getString("MNAME"))
+                        .setEmail(resultSet.getString("EMAIL"))
+                        .setCreatedDate(resultSet.getDate("CRE_DATE")));
             }
-            out.println("</body></html>");
+
+            request.setAttribute("members", members);
+            RequestDispatcher rd = request.getRequestDispatcher("/member/MemberList.jsp");
+            rd.include(request, response);
         } catch (Exception e) {
             throw new ServletException();
         } finally {
