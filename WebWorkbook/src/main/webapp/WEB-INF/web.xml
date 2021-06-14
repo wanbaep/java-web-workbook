@@ -21,21 +21,22 @@
         <param-value>1234</param-value>
     </context-param>
 
-<!--    필터 선언-->
-    <filter>
-        <filter-name>CharacterEncodingFilter</filter-name>
-        <filter-class>wanbaep.workbook.filter.CharacterEncodingFilter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-    </filter>
+<!--    필터 선언 어노테이션으로 변경-->
+<!--&lt;!&ndash;    필터 선언&ndash;&gt;-->
+<!--    <filter>-->
+<!--        <filter-name>CharacterEncodingFilter</filter-name>-->
+<!--        <filter-class>wanbaep.workbook.filter.CharacterEncodingFilter</filter-class>-->
+<!--        <init-param>-->
+<!--            <param-name>encoding</param-name>-->
+<!--            <param-value>UTF-8</param-value>-->
+<!--        </init-param>-->
+<!--    </filter>-->
 
-<!--    필터 URL 매핑-->
-    <filter-mapping>
-        <filter-name>CharacterEncodingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+<!--&lt;!&ndash;    필터 URL 매핑&ndash;&gt;-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>CharacterEncodingFilter</filter-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
 
 <!--    서블릿 선언-->
     <servlet>
@@ -46,11 +47,6 @@
         <servlet-name>Hello2</servlet-name>
         <servlet-class>wanbaep.workbook.servlet.HelloWorldGeneric</servlet-class>
     </servlet>
-<!--    <servlet>-->
-<!--        <servlet-name>Calculator</servlet-name>-->
-<!--        <servlet-class>CalculatorServlet</servlet-class>-->
-<!--    </servlet>-->
-
     
 <!--    서블릿을 URL과 연결-->
     <servlet-mapping>
@@ -61,11 +57,6 @@
         <servlet-name>Hello2</servlet-name>
         <url-pattern>/Hello2</url-pattern>
     </servlet-mapping>
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>Calculator</servlet-name>-->
-<!--        <url-pattern>/calc</url-pattern>-->
-<!--    </servlet-mapping>-->
-
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
