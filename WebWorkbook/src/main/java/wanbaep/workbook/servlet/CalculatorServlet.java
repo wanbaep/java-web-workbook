@@ -17,7 +17,7 @@ public class CalculatorServlet extends GenericServlet {
         int b = Integer.parseInt(servletRequest.getParameter("b"));
 
         servletResponse.setContentType("text/plain");
-        servletResponse.setCharacterEncoding("UTF-8");
+//        servletResponse.setCharacterEncoding("UTF-8");
         PrintWriter writer = servletResponse.getWriter();
         writer.println("a=" + a + "," + "b=" + b + " 의 계산결과 입니다.");
         writer.println("a + b = " + (a+b));
