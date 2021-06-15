@@ -50,7 +50,9 @@ public class MemberListServlet extends HttpServlet {
             RequestDispatcher rd = request.getRequestDispatcher("/member/MemberList.jsp");
             rd.include(request, response);
         } catch (Exception e) {
-            throw new ServletException();
+            request.setAttribute("error", e);
+            RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+            rd.forward(request, response);  //error인 경우 forward 로 Error.jsp 서블릿에게 작업 위임
         } finally {
             try { if (resultSet != null) resultSet.close(); } catch (Exception e) {}
             try { if (statement != null) statement.close(); } catch (Exception e) {}
