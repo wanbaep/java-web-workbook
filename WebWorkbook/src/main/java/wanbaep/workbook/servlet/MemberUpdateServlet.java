@@ -8,7 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 @WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet {
@@ -19,11 +22,7 @@ public class MemberUpdateServlet extends HttpServlet {
         PreparedStatement stmt = null;
         try {
             ServletContext sc = this.getServletContext();
-            Class.forName(sc.getInitParameter("driver"));
-            conn = DriverManager.getConnection(
-                    sc.getInitParameter("url"),
-                    sc.getInitParameter("username"),
-                    sc.getInitParameter("password"));
+            conn = (Connection) sc.getAttribute("conn");
             stmt = conn.prepareStatement("UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=NOW()"
                     + " WHERE MNO=?");
             stmt.setString(1, request.getParameter("email"));
@@ -36,7 +35,6 @@ public class MemberUpdateServlet extends HttpServlet {
             throw new ServletException(e);
         } finally {
             try { if (stmt != null) stmt.close(); } catch (Exception e) {}
-            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
 
@@ -47,11 +45,7 @@ public class MemberUpdateServlet extends HttpServlet {
         ResultSet rs = null;
         try {
             ServletContext sc = this.getServletContext();
-            Class.forName(sc.getInitParameter("driver"));
-            conn = DriverManager.getConnection(
-                    sc.getInitParameter("url"),
-                    sc.getInitParameter("username"),
-                    sc.getInitParameter("password"));
+            conn = (Connection) sc.getAttribute("conn");
             stmt = conn.createStatement();
             rs = stmt.executeQuery(
                     "select MNO, EMAIL, MNAME, CRE_DATE from MEMBERS" +
@@ -78,7 +72,6 @@ public class MemberUpdateServlet extends HttpServlet {
         } finally {
             try { if (rs != null) rs.close(); } catch (Exception e) { e.printStackTrace();}
             try { if (stmt != null) stmt.close(); } catch (Exception e) {}
-            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
 }

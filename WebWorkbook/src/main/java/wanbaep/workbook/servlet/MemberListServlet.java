@@ -2,14 +2,17 @@ package wanbaep.workbook.servlet;
 
 import wanbaep.workbook.vo.Member;
 
-import javax.servlet.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 @WebServlet("/member/list")
@@ -23,12 +26,7 @@ public class MemberListServlet extends HttpServlet {
 
         try {
             ServletContext sc = this.getServletContext();
-            Class.forName(sc.getInitParameter("driver"));
-            conn = DriverManager.getConnection(
-                    sc.getInitParameter("url"), //JDBC URL
-                    sc.getInitParameter("username"),  // DBMS 사용자 아이디
-                    sc.getInitParameter("password")  // DBMS 사용자 암호
-            );
+            conn = (Connection) sc.getAttribute("conn");
             statement = conn.createStatement();
             resultSet = statement.executeQuery(
                     "select MNO, MNAME, EMAIL, CRE_DATE" +
@@ -56,7 +54,6 @@ public class MemberListServlet extends HttpServlet {
         } finally {
             try { if (resultSet != null) resultSet.close(); } catch (Exception e) {}
             try { if (statement != null) statement.close(); } catch (Exception e) {}
-            try { if(conn != null) conn.close(); } catch (Exception e) {}
         }
     }
 }

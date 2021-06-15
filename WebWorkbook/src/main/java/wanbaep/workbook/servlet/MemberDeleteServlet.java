@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
 @WebServlet("/member/delete")
@@ -20,11 +19,7 @@ public class MemberDeleteServlet extends HttpServlet {
 
         try {
             ServletContext sc = this.getServletContext();
-            Class.forName(sc.getInitParameter("driver"));
-            conn = DriverManager.getConnection(
-                    sc.getInitParameter("url"),
-                    sc.getInitParameter("username"),
-                    sc.getInitParameter("password"));
+            conn = (Connection) sc.getAttribute("conn");
             stmt = conn.prepareStatement("DELETE FROM MEMBERS WHERE MNO=?");
             stmt.setInt(1, Integer.parseInt(req.getParameter("no")));
             stmt.executeUpdate();
@@ -34,7 +29,6 @@ public class MemberDeleteServlet extends HttpServlet {
             throw new ServletException(e);
         } finally {
             try { if(stmt != null) stmt.close(); } catch (Exception e) {}
-            try { if(conn != null) stmt.close(); } catch (Exception e) {}
         }
 
     }

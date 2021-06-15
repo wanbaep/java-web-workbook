@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
 @WebServlet("/member/add")
@@ -41,11 +40,7 @@ public class MemberAddServlet extends HttpServlet {
 
         try {
             ServletContext sc = this.getServletContext();
-            Class.forName(sc.getInitParameter("driver"));
-            conn = DriverManager.getConnection(
-                    sc.getInitParameter("url"),
-                    sc.getInitParameter("username"),
-                    sc.getInitParameter("password"));
+            conn = (Connection) sc.getAttribute("conn");
             statement = conn.prepareStatement(
                     "INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)" +
                             " VALUES (?,?,?,NOW(),NOW())");
@@ -72,7 +67,6 @@ public class MemberAddServlet extends HttpServlet {
             throw new ServletException(e);
         } finally {
             try {if (statement != null) statement.close();} catch (Exception e) {}
-            try {if (conn != null) conn.close();} catch (Exception e) {}
         }
     }
 }
