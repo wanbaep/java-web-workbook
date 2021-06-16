@@ -1,5 +1,6 @@
 package wanbaep.workbook.servlet;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,24 +15,14 @@ import java.sql.PreparedStatement;
 @WebServlet("/member/add")
 public class MemberAddServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html; charset=UTF-8");
-        PrintWriter out = resp.getWriter();
-        out.println("<html><head><title>회원 등록</title></head>");
-        out.println("<body><h1>회원 등록</h1>");
-        out.println("<form action='add' method='post'>");
-        out.println("이름: <input type='text' name='name'><br>");
-        out.println("이메일: <input type='text' name='email'><br>");
-        out.println("암호: <input type='password' name='password'><br>");
-        out.println("<input type='submit' value='추가'>");
-        out.println("<input type='reset' value='취소'");
-        out.println("<input type='reset' value='취소'>");
-        out.println("</form>");
-        out.println("</body></html>");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html; charset=UTF-8");
+        RequestDispatcher rd = request.getRequestDispatcher("/member/MemberForm.jsp");
+        rd.forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // CharacterEncodingFilter 에서 처리
         // req.setCharacterEncoding("UTF-8");
 
@@ -44,16 +35,16 @@ public class MemberAddServlet extends HttpServlet {
             statement = conn.prepareStatement(
                     "INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)" +
                             " VALUES (?,?,?,NOW(),NOW())");
-            statement.setString(1, req.getParameter("email"));
-            statement.setString(2, req.getParameter("password"));
-            statement.setString(3, req.getParameter("name"));
+            statement.setString(1, request.getParameter("email"));
+            statement.setString(2, request.getParameter("password"));
+            statement.setString(3, request.getParameter("name"));
             statement.executeUpdate();  //SQL문을 DB서버에 보낸다.
 
-            resp.sendRedirect("list");
+            response.sendRedirect("list");
             // redirect 는 HTML을 출력하지 않는다.
-            /*
-            resp.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = resp.getWriter();
+            /* //Refresh 하는 방법
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
             out.println("<html><head><title>회원등록결과</title>");
             out.println("<meta http-equiv='Refresh' content='1; url=list'>");
             out.println("</head>");
@@ -61,10 +52,12 @@ public class MemberAddServlet extends HttpServlet {
             out.println("<p>등록 성공입니다!</p>");
             out.println("</body></html>");
 
-            //resp.addHeader("Refresh", "1;url=list");
+            //response.addHeader("Refresh", "1;url=list");
              */
         } catch (Exception e) {
-            throw new ServletException(e);
+            request.setAttribute("error", e);
+            RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
+            rd.forward(request, response);
         } finally {
             try {if (statement != null) statement.close();} catch (Exception e) {}
         }
