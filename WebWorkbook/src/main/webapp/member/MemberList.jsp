@@ -8,6 +8,7 @@
 <%@ page import="wanbaep.workbook.vo.Member"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html"; charset="UTF-8">
@@ -17,16 +18,14 @@
 <jsp:include page="/Header.jsp"/>
 <h1>회원 목록</h1>
 <p><a href='add'>신규 회원</a></p>
-<%
-    ArrayList<Member> members = (ArrayList<Member>) request.getAttribute("members");
-    for(Member member : members) {
-%>
-<%=member.getNo()%>,
-<a href="update?no=<%=member.getNo()%>"><%=member.getName()%></a>,
-<%=member.getEmail()%>,
-<%=member.getCreatedDate()%>
-<a href="delete?no=<%=member.getNo()%>">[삭제]</a><br>
-<%} %>
+<c:forEach var="member" items="${members}">
+    ${member.no},
+    <a href="update?no=${member.no}">${member.name}</a>,
+    ${member.email},
+    ${member.createdDate}
+    <a href="delete?no=${member.no}">[삭제]</a><br>
+</c:forEach>
+
 <jsp:include page="/Tail.jsp"/>
 </body>
 </html>
