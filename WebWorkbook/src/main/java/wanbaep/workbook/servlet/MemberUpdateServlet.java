@@ -1,5 +1,6 @@
 package wanbaep.workbook.servlet;
 
+import wanbaep.workbook.dao.MemberDao;
 import wanbaep.workbook.vo.Member;
 
 import javax.servlet.RequestDispatcher;
@@ -11,57 +12,42 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 @WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        request.setCharacterEncoding("UTF-8");
-        Connection conn = null;
-        PreparedStatement stmt = null;
         try {
             ServletContext sc = this.getServletContext();
-            conn = (Connection) sc.getAttribute("conn");
-            stmt = conn.prepareStatement("UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=NOW()"
-                    + " WHERE MNO=?");
-            stmt.setString(1, request.getParameter("email"));
-            stmt.setString(2, request.getParameter("name"));
-            stmt.setInt(3, Integer.parseInt(request.getParameter("no")));
-            stmt.executeUpdate();
+            Connection conn = (Connection) sc.getAttribute("conn");
+            MemberDao memberDao = new MemberDao();
+            memberDao.setConnection(conn);
+
+            Member member = new Member()
+                    .setEmail(request.getParameter("email"))
+                    .setName(request.getParameter("name"))
+                    .setNo(Integer.parseInt(request.getParameter("no")));
+            memberDao.update(member);
 
             response.sendRedirect("list");
         } catch (Exception e) {
             request.setAttribute("error", e);
             RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
             rd.forward(request, response);
-        } finally {
-            try { if (stmt != null) stmt.close(); } catch (Exception e) {}
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
         try {
             ServletContext sc = this.getServletContext();
-            conn = (Connection) sc.getAttribute("conn");
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(
-                    "select MNO, EMAIL, MNAME, CRE_DATE from MEMBERS" +
-                            " where MNO=" + request.getParameter("no"));
+            Connection conn = (Connection) sc.getAttribute("conn");
+            MemberDao memberDao = new MemberDao();
+            memberDao.setConnection(conn);
 
             response.setContentType("text/html; charset=UTF-8");
-            if(rs.next()) {
-                Member member = new Member()
-                        .setNo(rs.getInt("MNO"))
-                        .setName(rs.getString("MNAME"))
-                        .setEmail(rs.getString("EMAIL"))
-                        .setCreatedDate(rs.getDate("CRE_DATE"));
+            Member member = memberDao.selectOne(Integer.parseInt(request.getParameter("no")));
+            if(member != null) {
                 request.setAttribute("updateMember", member);
                 RequestDispatcher rd = request.getRequestDispatcher("/member/MemberUpdateForm.jsp");
                 rd.forward(request, response);
@@ -69,14 +55,10 @@ public class MemberUpdateServlet extends HttpServlet {
                 RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
                 rd.forward(request, response);
             }
-
         } catch (Exception e) {
             request.setAttribute("error", e);
             RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
             rd.forward(request, response);
-        } finally {
-            try { if (rs != null) rs.close(); } catch (Exception e) { e.printStackTrace();}
-            try { if (stmt != null) stmt.close(); } catch (Exception e) {}
         }
     }
 }
