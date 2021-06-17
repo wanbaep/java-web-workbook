@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
 
 @WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet {
@@ -19,10 +18,7 @@ public class MemberUpdateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             ServletContext sc = this.getServletContext();
-            Connection conn = (Connection) sc.getAttribute("conn");
-            MemberDao memberDao = new MemberDao();
-            memberDao.setConnection(conn);
-
+            MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
             Member member = new Member()
                     .setEmail(request.getParameter("email"))
                     .setName(request.getParameter("name"))
@@ -41,12 +37,10 @@ public class MemberUpdateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             ServletContext sc = this.getServletContext();
-            Connection conn = (Connection) sc.getAttribute("conn");
-            MemberDao memberDao = new MemberDao();
-            memberDao.setConnection(conn);
+            MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
+            Member member = memberDao.selectOne(Integer.parseInt(request.getParameter("no")));
 
             response.setContentType("text/html; charset=UTF-8");
-            Member member = memberDao.selectOne(Integer.parseInt(request.getParameter("no")));
             if(member != null) {
                 request.setAttribute("updateMember", member);
                 RequestDispatcher rd = request.getRequestDispatcher("/member/MemberUpdateForm.jsp");

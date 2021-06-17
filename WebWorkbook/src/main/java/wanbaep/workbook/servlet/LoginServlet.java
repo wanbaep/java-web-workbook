@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.Connection;
 
 @WebServlet("/auth/login")
 public class LoginServlet extends HttpServlet {
@@ -26,9 +25,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             ServletContext sc = request.getServletContext();
-            Connection conn = (Connection) sc.getAttribute("conn");
-            MemberDao memberDao = new MemberDao();
-            memberDao.setConnection(conn);
+            MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
             Member member = memberDao.exist(request.getParameter("email"), request.getParameter("password"));
             if(member != null) {
                 HttpSession session = request.getSession();
