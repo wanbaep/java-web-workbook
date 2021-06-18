@@ -1,6 +1,7 @@
 package wanbaep.workbook.listener;
 
 import wanbaep.workbook.dao.MemberDao;
+import wanbaep.workbook.util.DBConnectionPool;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -11,18 +12,20 @@ import java.sql.DriverManager;
 
 @WebListener
 public class ContextLoaderListener implements ServletContextListener {
-    Connection connection;
+    DBConnectionPool connectionPool;
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
             ServletContext sc = sce.getServletContext();
-            Class.forName(sc.getInitParameter("driver"));
-            connection = DriverManager.getConnection(
+            connectionPool = new DBConnectionPool(
+                    sc.getInitParameter("driver"),
                     sc.getInitParameter("url"),
                     sc.getInitParameter("username"),
                     sc.getInitParameter("password"));
+
             MemberDao memberDao = new MemberDao();
-            memberDao.setConnection(connection);
+            memberDao.setConnectionPool(connectionPool);
             sc.setAttribute("memberDao", memberDao);
         } catch (Throwable e) {
             e.printStackTrace();
@@ -31,10 +34,6 @@ public class ContextLoaderListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        try {
-            connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        connectionPool.closeAll();
     }
 }
