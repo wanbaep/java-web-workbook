@@ -1,8 +1,8 @@
 package wanbaep.workbook.dao;
 
-import wanbaep.workbook.util.DBConnectionPool;
 import wanbaep.workbook.vo.Member;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemberDao {
-    private DBConnectionPool connectionPool;
+    private DataSource ds;
 
-    public void setConnectionPool(DBConnectionPool connectionPool) {
-        this.connectionPool = connectionPool;
+    public void setDataSource(DataSource ds) {
+        this.ds = ds;
     }
 
     public List<Member> selectList() throws Exception {
@@ -22,7 +22,7 @@ public class MemberDao {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            connection = this.connectionPool.getConnection();
+            connection = ds.getConnection();
             stmt = connection.createStatement();
             rs = stmt.executeQuery("SELECT MNO, MNAME, EMAIL, CRE_DATE FROM MEMBERS ORDER BY MNO ASC");
 
@@ -40,7 +40,7 @@ public class MemberDao {
         } finally {
             try { if (rs != null) rs.close(); } catch (Exception e) {}
             try { if (stmt != null) stmt.close(); } catch (Exception e) {}
-            if(connection != null) this.connectionPool.returnConnection(connection);
+            try { if (connection != null) connection.close(); } catch (Exception e) {}
         }
     }
 
@@ -48,7 +48,7 @@ public class MemberDao {
         Connection connection = null;
         PreparedStatement stmt = null;
         try {
-            connection = this.connectionPool.getConnection();
+            connection = ds.getConnection();
             stmt = connection.prepareStatement(
                     "INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)" +
                             " VALUES (?,?,?,NOW(),NOW())");
@@ -60,7 +60,7 @@ public class MemberDao {
             throw e;    //insert 실패 시 throw
         } finally {
             try {if (stmt != null) stmt.close();} catch (Exception e) {}
-            if(connection != null) this.connectionPool.returnConnection(connection);
+            try { if (connection != null) connection.close(); } catch (Exception e) {}
         }
     }
 
@@ -68,7 +68,7 @@ public class MemberDao {
         Connection connection = null;
         PreparedStatement stmt = null;
         try {
-            connection = this.connectionPool.getConnection();
+            connection = ds.getConnection();
             stmt = connection.prepareStatement("DELETE FROM MEMBERS WHERE MNO=?");
             stmt.setInt(1, no);
             return stmt.executeUpdate();
@@ -76,7 +76,7 @@ public class MemberDao {
             throw e;
         } finally {
             try { if(stmt != null) stmt.close(); } catch (Exception e) {}
-            if(connection != null) this.connectionPool.returnConnection(connection);
+            try { if (connection != null) connection.close(); } catch (Exception e) {}
         }
     }
 
@@ -85,7 +85,7 @@ public class MemberDao {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            connection = this.connectionPool.getConnection();
+            connection = ds.getConnection();
             stmt = connection.createStatement();
             rs = stmt.executeQuery("select MNO, EMAIL, MNAME, CRE_DATE from MEMBERS where MNO=" + no);
 
@@ -104,7 +104,7 @@ public class MemberDao {
         } finally {
             try { if (rs != null) rs.close(); } catch (Exception e) { e.printStackTrace();}
             try { if (stmt != null) stmt.close(); } catch (Exception e) {}
-            if(connection != null) this.connectionPool.returnConnection(connection);
+            try { if (connection != null) connection.close(); } catch (Exception e) {}
         }
     }
 
@@ -112,7 +112,7 @@ public class MemberDao {
         Connection connection = null;
         PreparedStatement stmt = null;
         try {
-            connection = this.connectionPool.getConnection();
+            connection = ds.getConnection();
             stmt = connection.prepareStatement("UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=NOW() WHERE MNO=?");
             stmt.setString(1, member.getEmail());
             stmt.setString(2, member.getName());
@@ -122,7 +122,7 @@ public class MemberDao {
             throw e;
         } finally {
             try { if (stmt != null) stmt.close(); } catch (Exception e) {}
-            if(connection != null) this.connectionPool.returnConnection(connection);
+            try { if (connection != null) connection.close(); } catch (Exception e) {}
         }
     }
 
@@ -131,7 +131,7 @@ public class MemberDao {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            connection = this.connectionPool.getConnection();
+            connection = ds.getConnection();
             stmt = connection.prepareStatement("SELECT MNAME, EMAIL FROM MEMBERS WHERE EMAIL=? AND PWD=?");
             stmt.setString(1, email);
             stmt.setString(2, password);
@@ -149,7 +149,7 @@ public class MemberDao {
         } finally {
             try { if (rs != null) rs.close(); } catch (Exception e) {}
             try { if (stmt != null) stmt.close(); } catch (Exception e) {}
-            if(connection != null) this.connectionPool.returnConnection(connection);
+            try { if (connection != null) connection.close(); } catch (Exception e) {}
         }
     }
 }
