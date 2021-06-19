@@ -2,7 +2,6 @@ package wanbaep.workbook.servlet;
 
 import wanbaep.workbook.dao.MemberDao;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,14 +19,9 @@ public class MemberListServlet extends HttpServlet {
             ServletContext sc = this.getServletContext();
             MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
             request.setAttribute("members", memberDao.selectList());
-            response.setContentType("text/html; charset=UTF-8");
-            RequestDispatcher rd = request.getRequestDispatcher("/member/MemberList.jsp");
-            rd.include(request, response);
+            request.setAttribute("viewUrl", "/member/MemberList.jsp");
         } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", e);
-            RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-            rd.forward(request, response);  //error인 경우 forward 로 Error.jsp 서블릿에게 작업 위임
+            throw new ServletException(e);
         }
     }
 }

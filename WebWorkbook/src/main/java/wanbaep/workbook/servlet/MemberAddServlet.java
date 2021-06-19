@@ -3,7 +3,6 @@ package wanbaep.workbook.servlet;
 import wanbaep.workbook.dao.MemberDao;
 import wanbaep.workbook.vo.Member;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,9 +15,7 @@ import java.io.IOException;
 public class MemberAddServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html; charset=UTF-8");
-        RequestDispatcher rd = request.getRequestDispatcher("/member/MemberForm.jsp");
-        rd.forward(request, response);
+        request.setAttribute("viewUrl", "/member/MemberForm.jsp");
     }
 
     @Override
@@ -26,19 +23,11 @@ public class MemberAddServlet extends HttpServlet {
         try {
             ServletContext sc = this.getServletContext();
             MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
-            Member member = new Member()
-                    .setEmail(request.getParameter("email"))
-                    .setPassword(request.getParameter("password"))
-                    .setName(request.getParameter("name"));
-            int result = memberDao.insert(member);
-            if(result < 0) {    //insert 실패
-                throw new ServletException();
-            }
-            response.sendRedirect("list");
+            Member member = (Member) request.getAttribute("member");
+            memberDao.insert(member);
+            request.setAttribute("viewUrl", "redirect:list.do");
         } catch (Exception e) {
-            request.setAttribute("error", e);
-            RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-            rd.forward(request, response);
+            throw new ServletException(e);
         }
     }
 }

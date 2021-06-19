@@ -3,7 +3,6 @@ package wanbaep.workbook.servlet;
 import wanbaep.workbook.dao.MemberDao;
 import wanbaep.workbook.vo.Member;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,17 +18,11 @@ public class MemberUpdateServlet extends HttpServlet {
         try {
             ServletContext sc = this.getServletContext();
             MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
-            Member member = new Member()
-                    .setEmail(request.getParameter("email"))
-                    .setName(request.getParameter("name"))
-                    .setNo(Integer.parseInt(request.getParameter("no")));
+            Member member = (Member) request.getAttribute("member");
             memberDao.update(member);
-
-            response.sendRedirect("list");
+            request.setAttribute("viewUrl", "redirect:list.do");
         } catch (Exception e) {
-            request.setAttribute("error", e);
-            RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-            rd.forward(request, response);
+            throw new ServletException(e);
         }
     }
 
@@ -40,19 +33,14 @@ public class MemberUpdateServlet extends HttpServlet {
             MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
             Member member = memberDao.selectOne(Integer.parseInt(request.getParameter("no")));
 
-            response.setContentType("text/html; charset=UTF-8");
             if(member != null) {
                 request.setAttribute("updateMember", member);
-                RequestDispatcher rd = request.getRequestDispatcher("/member/MemberUpdateForm.jsp");
-                rd.forward(request, response);
+                request.setAttribute("viewUrl", "/member/MemberUpdateForm.jsp");
             } else {
-                RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-                rd.forward(request, response);
+                throw new ServletException("member not found");
             }
         } catch (Exception e) {
-            request.setAttribute("error", e);
-            RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-            rd.forward(request, response);
+            throw new ServletException(e);
         }
     }
 }
