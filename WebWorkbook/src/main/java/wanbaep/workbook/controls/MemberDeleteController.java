@@ -1,15 +1,23 @@
 package wanbaep.workbook.controls;
 
+import wanbaep.workbook.bind.DataBinding;
 import wanbaep.workbook.dao.MemberDao;
 
 import java.util.Map;
 
-public class MemberDeleteController implements Controller {
+public class MemberDeleteController implements Controller, DataBinding {
     MemberDao memberDao;
 
     public MemberDeleteController setMemberDao(MemberDao memberDao) {
         this.memberDao = memberDao;
         return this;
+    }
+
+    @Override
+    public Object[] getDataBinders() {
+        return new Object[]{
+                "no", Integer.class
+        };
     }
 
     @Override
