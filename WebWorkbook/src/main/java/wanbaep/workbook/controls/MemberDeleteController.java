@@ -1,10 +1,12 @@
 package wanbaep.workbook.controls;
 
+import wanbaep.workbook.annotation.Component;
 import wanbaep.workbook.bind.DataBinding;
 import wanbaep.workbook.dao.MemberDao;
 
 import java.util.Map;
 
+@Component("/member/delete.do")
 public class MemberDeleteController implements Controller, DataBinding {
     MemberDao memberDao;
 

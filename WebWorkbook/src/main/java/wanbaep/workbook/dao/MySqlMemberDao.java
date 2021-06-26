@@ -1,5 +1,6 @@
 package wanbaep.workbook.dao;
 
+import wanbaep.workbook.annotation.Component;
 import wanbaep.workbook.vo.Member;
 
 import javax.sql.DataSource;
@@ -10,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component("memberDao")
 public class MySqlMemberDao implements MemberDao {
     private DataSource ds;
 

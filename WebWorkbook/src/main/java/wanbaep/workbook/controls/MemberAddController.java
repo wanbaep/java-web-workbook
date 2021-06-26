@@ -1,11 +1,13 @@
 package wanbaep.workbook.controls;
 
+import wanbaep.workbook.annotation.Component;
 import wanbaep.workbook.bind.DataBinding;
 import wanbaep.workbook.dao.MemberDao;
 import wanbaep.workbook.vo.Member;
 
 import java.util.Map;
 
+@Component("/member/add.do")
 public class MemberAddController implements Controller, DataBinding {
     MemberDao memberDao;
 

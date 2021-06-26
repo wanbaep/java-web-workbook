@@ -1,5 +1,6 @@
 package wanbaep.workbook.controls;
 
+import wanbaep.workbook.annotation.Component;
 import wanbaep.workbook.bind.DataBinding;
 import wanbaep.workbook.dao.MemberDao;
 import wanbaep.workbook.vo.Member;
@@ -7,6 +8,7 @@ import wanbaep.workbook.vo.Member;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
+@Component("/auth/login.do")
 public class LogInController implements Controller, DataBinding {
     MemberDao memberDao;
 

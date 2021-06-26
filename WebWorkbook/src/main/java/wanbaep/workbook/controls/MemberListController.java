@@ -1,9 +1,11 @@
 package wanbaep.workbook.controls;
 
+import wanbaep.workbook.annotation.Component;
 import wanbaep.workbook.dao.MemberDao;
 
 import java.util.Map;
 
+@Component("/member/list.do")
 public class MemberListController implements Controller {
     MemberDao memberDao;
 
