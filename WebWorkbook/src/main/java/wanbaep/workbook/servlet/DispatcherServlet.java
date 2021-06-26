@@ -2,7 +2,9 @@ package wanbaep.workbook.servlet;
 
 import wanbaep.workbook.bind.DataBinding;
 import wanbaep.workbook.bind.ServletRequestDataBinder;
+import wanbaep.workbook.context.ApplicationContext;
 import wanbaep.workbook.controls.Controller;
+import wanbaep.workbook.listener.ContextLoaderListener;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -21,11 +23,16 @@ public class DispatcherServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         String servletPath = request.getServletPath();
         try {
-            ServletContext sc = this.getServletContext();
+            ApplicationContext ctx = ContextLoaderListener.getApplicationContext();
+
             HashMap<String, Object> model = new HashMap<>();
             model.put("session", request.getSession());
 
-            Controller pageController = (Controller) sc.getAttribute(servletPath);
+            Controller pageController = (Controller) ctx.getBean(servletPath);
+            if(pageController == null) {
+                throw new Exception("요청한 서비스를 찾을 수 없습니다.");
+            }
+
             if(pageController instanceof DataBinding) {
                 prepareRequestData(request, model, (DataBinding) pageController);
             }
